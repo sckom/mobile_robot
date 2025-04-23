@@ -1,6 +1,6 @@
 /**
  * \file main.cpp
- * \author AMasterov
+ * \author Sckom
  * \brief Основной файл программы
  * \version 0.1
  * \date 2025-02-11

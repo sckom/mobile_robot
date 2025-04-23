@@ -1,6 +1,6 @@
 /**
  * \file smif_func_test.h
- * \author AMasterov
+ * \author Sckom
  * \brief Файл содержит объявление функций управления 
  * поворотным механизмом SMIF и инициализацию структур данных и функций
  * \version 0.1

@@ -1,6 +1,6 @@
 /**
  * \file mrp_wifi_client.h
- * \author your name (you\domain.com)
+ * \author Sckom
  * \brief 
  * \version 0.1
  * \date 2025-03-28
@@ -18,8 +18,6 @@
 #include <WebServer.h>
 // Смены имени в сети
 #include <ESPmDNS.h>
-// Энергонезависимая память
-#include <EEPROM.h>
 // Код для WebApp
 #include "../../../include/page_webapp.h"
 

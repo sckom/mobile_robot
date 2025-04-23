@@ -1,14 +1,14 @@
-// /**
-//  * \file smif_test.c
-//  * \author AMasterov
-//  * \brief Файл содержит описание функций (инструкции) управления 
-//  * поворотным механизмом SMIF
-//  * \version 0.1
-//  * \date 2025-03-04
-//  *
-//  * \copyright Copyright (c) 2025
-//  *
-//  */
+/**
+ * \file mrp_data.cpp
+ * \author Sckom
+ * \brief Файл содержит описание функций (инструкции) управления 
+ * поворотным механизмом SMIF
+ * \version 0.1
+ * \date 2025-03-04
+ *
+ * \copyright Copyright (c) 2025
+ *
+ */
 
 // // Подключение заголовочного файла с объявлением функций и структур
 // #include "../inc/mrp_func_test.h"

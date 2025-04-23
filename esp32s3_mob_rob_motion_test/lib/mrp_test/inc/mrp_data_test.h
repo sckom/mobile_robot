@@ -1,6 +1,6 @@
 /**
  * \file smif_test.h
- * \author AMasterov
+ * \author Sckom
  * \brief Файл содержит структуры данных и функций для взаимодействия с
  * поворотным механизмом платформы SMIF
  * \version 0.1
