@@ -97,6 +97,7 @@
     WH_3_R_IS       ||      <17>
     -------------------------------
 
+
     ===============================
         BREIF REG_ZONE DATA
     ===============================
@@ -117,7 +118,8 @@
     WH_4_R_IS       ||      <23>
     -------------------------------
 
-     ===============================
+
+    ===============================
         BREIF REG_ZONE DATA
     ===============================
     CTR_MOVE        ||      <24:29>
@@ -192,6 +194,24 @@ typedef struct
 /**
  * @brief 
  * 
+ * @param regs 
+ * @return REG_ERROR 
+ */
+REG_ERROR reg_read(reg_data* regs);
+
+/**
+ * @brief 
+ * 
+ * @param reg_val
+ * @param regs 
+ * @return REG_ERROR 
+ */
+REG_ERROR reg_write(byte* reg_val, reg_data* regs);
+
+/**
+ * @brief 
+ * 
+ * @param regs 
  * @return REG_ERROR 
  */
 REG_ERROR reg_init(reg_data* regs);
@@ -202,14 +222,15 @@ REG_ERROR reg_init(reg_data* regs);
  * @param regs 
  * @return REG_ERROR 
  */
-REG_ERROR reg_read(reg_data* regs);
+REG_ERROR reg_free(reg_data* regs);
 
 /**
  * @brief 
  * 
+ * @param wheel 
  * @param regs 
  * @return REG_ERROR 
  */
-REG_ERROR reg_write(reg_data* regs);
+REG_ERROR reg_wheel_swap(reg_data_wheel* wheel, reg_data* regs);
 
 #endif
