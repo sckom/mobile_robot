@@ -48,6 +48,8 @@
 #define PIN_R_IS_4 0      // Сигнал IS при вращении по часовой драйвера 4
 #define PIN_L_IS_4 0      // Сигнал IS при вращении против часовой драйвера 4
 
+#define RAD_MOVE    1
+
 #ifdef __cplusplus
 extern "C" {
 #endif

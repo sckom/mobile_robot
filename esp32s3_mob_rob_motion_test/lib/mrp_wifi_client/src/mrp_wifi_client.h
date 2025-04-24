@@ -18,8 +18,8 @@
 #include <WebServer.h>
 // Смены имени в сети
 #include <ESPmDNS.h>
-// Код для WebApp
-#include "../../../include/page_webapp.h"
+// Код для WebApp, необходимо хранить в ${workspaceFolder}/include
+#include "page_webapp.h"
 
 // Object of WebServer(HTTP port, 80 is defult)
 static WebServer server(80);

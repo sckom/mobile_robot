@@ -34,7 +34,7 @@
 // Выбор компиляции примера по теме "Программный перезапуск микроконтроллера"
 //#define TASK_1_SOFTWARE_REBOOT
 // Выбор компиляции примера по теме "Энергонезаисимая память"
-#define TASK_2_EEPROM
+//#define TASK_2_EEPROM
 
 // Если выбрано компилировать проект "Программный перезапуск микроконтроллера"
 #ifdef TASK_1_SOFTWARE_REBOOT
@@ -140,4 +140,44 @@ void loop()
     ESP.restart();
 }
 
+#endif
+
+#ifdef FUNC_WAKEUP
+/** \brief Функция вывода причины выхода из режима глубокого сна
+  \return None
+*/
+void print_wakeup_reason()
+{
+  /*
+      Переменная, для хренения кода одной из причин выхода из режима 
+    глубокого сна. Может принимать одно из значений перечисления esp_sleep_source_t .
+  */
+  esp_sleep_wakeup_cause_t wakeup_reason;
+
+  // Получиение кода причины выхода из режима глубокого сна
+  wakeup_reason = esp_sleep_get_wakeup_cause();
+
+  // Выбор действий на основе кода причины выхода из режима глубокого сна
+  switch(wakeup_reason)
+  {
+    case ESP_SLEEP_WAKEUP_EXT0 :
+      Serial.println("Wakeup caused by external signal using RTC_IO");
+      break;
+    case ESP_SLEEP_WAKEUP_EXT1 :
+      Serial.println("Wakeup caused by external signal using RTC_CNTL");
+      break;
+    case ESP_SLEEP_WAKEUP_TIMER :
+      Serial.println("Wakeup caused by timer");
+      break;
+    case ESP_SLEEP_WAKEUP_TOUCHPAD :
+      Serial.println("Wakeup caused by touchpad");
+      break;
+    case ESP_SLEEP_WAKEUP_ULP :
+      Serial.println("Wakeup caused by ULP program");
+      break;
+    default :
+      Serial.println("Wakeup was not caused by deep sleep: " + String(wakeup_reason));
+      break;
+  }
+}
 #endif

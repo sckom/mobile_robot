@@ -10,7 +10,7 @@
  */
 
 // Заголовочный файл с инициализацией фнкций и данных
-#include "../inc/mrp_wifi_client.h"
+#include <mrp_wifi_client.h>
 
 
 

@@ -15,9 +15,9 @@
 #include <Arduino.h>
 
 // SSID существующей сети WiFI
-static const char* ssid = "RoboticsLab1";     // Enter your exist WiFi ssid here
+static const char* ssid = "";
 // Password существующей сети WiFI
-static const char* password = "RoboticsLab1"; // Enter your exist WiFi password here
+static const char* password = "";
 // DNS для переименования URL сервера в составе существующей сети WiFI в виде <DNS>.local
 static const char* nameDNS = "mrp"; // Enter your DNS here
 // Код для WebApp с хранением в памяти программы (ПЗУ)

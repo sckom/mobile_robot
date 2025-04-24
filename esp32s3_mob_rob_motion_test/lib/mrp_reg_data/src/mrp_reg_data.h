@@ -1,11 +1,11 @@
 /**
- * @file mrp_reg_data.h
- * @author Sckom
- * @brief 
- * @version 0.1
- * @date 2025-04-23
+ * \file mrp_reg_data.h
+ * \author Sckom
+ * \brief 
+ * \version 0.1
+ * \date 2025-04-23
  * 
- * @copyright Copyright (c) 2025
+ * \copyright Copyright (c) 2025
  * 
  */
 
@@ -15,9 +15,14 @@
 #include <Arduino.h>
 // Энергонезависимая память
 #include <EEPROM.h>
+// Перечень используемых пинов, необходимо хранить в ${workspaceFolder}/include
+#include <mrp_cfg.h>
 
 // Указываем количество байтов, к которым будет открыт доступ чтения/записи 
 #define EEPROM_SIZE 30 // Максимальное значение 512 (по рекомендации)
+
+// Максимальное количестов символов для названия регистра
+#define MAX_LEGHT_REG_NAME 50
 
 /*
     ===============================
@@ -140,8 +145,11 @@
     -------------------------------
 */
 
+// Возвращает название переменной <x> типа char[]
+#define NAME_DFN(x) (#x)
+
 /**
- * @brief 
+ * \brief 
  * 
  */
 typedef enum
@@ -151,35 +159,46 @@ typedef enum
 } REG_ERROR;
 
 /**
- * @brief 
+ * \brief 
  * 
  */
 typedef struct
 {
-    byte reg_f_pwm;
-    byte reg_b_pwm;
-    byte reg_f_en;
-    byte reg_b_en;
-    byte reg_f_is;
-    byte reg_b_is;
+    char name[MAX_LEGHT_REG_NAME];
+    uint8_t mem_num;
+    byte val;
+} reg_key;
+
+/**
+ * \brief 
+ * 
+ */
+typedef struct
+{
+    reg_key* reg_f_pwm;
+    reg_key* reg_b_pwm;
+    reg_key* reg_f_en;
+    reg_key* reg_b_en;
+    reg_key* reg_f_is;
+    reg_key* reg_b_is;
 } reg_data_wheel;
 
 /**
- * @brief 
+ * \brief 
  * 
  */
 typedef struct
 {
-    byte reg_pid_p;
-    byte reg_pid_i_1;
-    byte reg_pid_i_2;
-    byte reg_pid_d_1;
-    byte reg_pid_d_2;
-    byte reg_move_rad;
+    reg_key* reg_pid_p;
+    reg_key* reg_pid_i_1;
+    reg_key* reg_pid_i_2;
+    reg_key* reg_pid_d_1;
+    reg_key* reg_pid_d_2;
+    reg_key* reg_move_rad;
 } reg_data_ctr;
 
 /**
- * @brief 
+ * \brief 
  * 
  */
 typedef struct
@@ -190,47 +209,5 @@ typedef struct
     reg_data_wheel* br_wheel;
     reg_data_ctr* ctr_move;
 } reg_data;
-
-/**
- * @brief 
- * 
- * @param regs 
- * @return REG_ERROR 
- */
-REG_ERROR reg_read(reg_data* regs);
-
-/**
- * @brief 
- * 
- * @param reg_val
- * @param regs 
- * @return REG_ERROR 
- */
-REG_ERROR reg_write(byte* reg_val, reg_data* regs);
-
-/**
- * @brief 
- * 
- * @param regs 
- * @return REG_ERROR 
- */
-REG_ERROR reg_init(reg_data* regs);
-
-/**
- * @brief 
- * 
- * @param regs 
- * @return REG_ERROR 
- */
-REG_ERROR reg_free(reg_data* regs);
-
-/**
- * @brief 
- * 
- * @param wheel 
- * @param regs 
- * @return REG_ERROR 
- */
-REG_ERROR reg_wheel_swap(reg_data_wheel* wheel, reg_data* regs);
 
 #endif
