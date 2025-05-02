@@ -156,6 +156,7 @@ typedef enum
 {
     REG_ERROR_OK,
     REG_ERROR_WRONG_VAL,
+    REG_ERROR_NULL_PTR,
 } REG_ERROR;
 
 /**
@@ -165,7 +166,7 @@ typedef enum
 typedef struct
 {
     char name[MAX_LEGHT_REG_NAME];
-    uint8_t mem_num;
+    uint8_t addr;
     byte val;
 } reg_key;
 

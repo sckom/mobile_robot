@@ -12,97 +12,264 @@
 // Подключение заголовочного файла
 #include "mrp_reg_data.h"
 
-reg_key createRegKey(char *name, uint8_t memNum, byte value)
+//
+reg_key* regKeyListCreate()
 {
+    // Массив структур с регистрами, созданным в ОЗУ с возможностью изменения выделенной памяти
     reg_key* regs = (reg_key*)calloc(1, sizeof(reg_key));
+    // Массив символов, полученный преобразованием из строки
+    char *name = strchr("INIT_LIST", 9);
+    // Задание имени путём копирования из локальной переменной функции
+    strcpy(regs->name, name);
+    // Задание адресса
+    regs->addr = 0;
+    // Задание значения
+    regs->val = 0;
 
-    if ((name == NULL) || (strlen(name) > MAX_LEGHT_REG_NAME) || (memNum >= EEPROM_SIZE))
+    return regs;
+}
+
+//
+REG_ERROR regKeyListAdd(char *name, uint8_t addr, byte val, reg_key *regs)
+{
+    // Код испольнения функции
+    REG_ERROR error = REG_ERROR::REG_ERROR_OK;
+
+    if ((name == NULL) || (strlen(name) > MAX_LEGHT_REG_NAME) || (addr >= EEPROM_SIZE))
     {    
         name = strchr("None", 4);
-        strcpy(regs->name, name); 
-        return *regs;
+        strcpy(regs->name, name);
+        // Присвоение кода ошибки
+        error = REG_ERROR::REG_ERROR_WRONG_VAL;
+    }
+    else if (regs == NULL)
+    {
+        // Присвоение кода ошибки
+        error = REG_ERROR::REG_ERROR_NULL_PTR;
     }
     else
     {
-        strcpy(regs->name, name);
-        regs->mem_num = memNum;
-        regs->val = value;
-        return *regs;
+        // Количество структур reg_key
+        uint8_t size = sizeof(*regs) / sizeof(reg_key);
+
+        // Локальный массив структур для копирования
+        reg_key* new_regs[(size + 1)];
+
+        // Копирование значений в локльный массив существующих структур
+        for(uint8_t i = 0; i < size; i++)
+        {
+            // Имя следующего регистра
+            const char* n_name = regs[i].name;
+            // Адресс следующего регистра
+            uint8_t n_addr = regs[i].addr;
+            // Значение следующего регистра
+            byte n_val = regs[i].val;
+            // Копирование имени
+            strcpy(new_regs[i]->name, n_name);
+            // Копирование адресса
+            new_regs[i]->addr = n_addr;
+            // Копирование значения
+            new_regs[i]->val = n_val;
+        }
+
+        /* Заполнение данных нового ключа, помещённого в колнец списка */
+        
+        // Копирование имени
+        strcpy(new_regs[size]->name, name);
+        // Копирование адресса
+        new_regs[size]->addr = addr;
+        // Копирование значения
+        new_regs[size]->val = val;
+
+        // Меняем размер выделенной памяти
+        regs = (reg_key*)realloc(regs, (size + 1) * sizeof(reg_key));
+        // Во избежания утечки памяти заполняем значениями локального массива reg_key
+        regs = *new_regs;
     }
-}
-
-//
-byte regReadByName(reg_data *regs)
-{
-}
-
-byte regReadByNum(reg_data *regs)
-{
-}
-
-//
-REG_ERROR regWrite(byte *reg_val, reg_data *regs)
-{
-}
-
-//
-REG_ERROR reg_init(reg_data *regs)
-{
-    //
-    REG_ERROR error = REG_ERROR_OK;
-    // Проверка на нулевой указатель
-    if (regs == NULL)
-    {
-        return REG_ERROR_WRONG_VAL;
-    }
-
-    // Инициализация EEPROM с указанным размером
-    EEPROM.begin(EEPROM_SIZE);
-    reg_key keys[EEPROM_SIZE];
-    
-    keys[0] = createRegKey(NAME_DFN(PIN_R_PWM_1), 0, PIN_R_PWM_1);
-    keys[1] = createRegKey(NAME_DFN(PIN_L_PWM_1), 1, PIN_L_PWM_1);
-    keys[2] = createRegKey(NAME_DFN(PIN_R_EN_1), 2, PIN_R_EN_1);
-    keys[3] = createRegKey(NAME_DFN(PIN_L_EN_1), 3, PIN_L_EN_1);
-    keys[4] = createRegKey(NAME_DFN(PIN_R_IS_1), 4, PIN_R_IS_1);
-    keys[5] = createRegKey(NAME_DFN(PIN_L_IS_1), 5, PIN_L_IS_1);
-    
-    keys[6] = createRegKey(NAME_DFN(PIN_R_PWM_2), 6, PIN_R_PWM_2);
-    keys[7] = createRegKey(NAME_DFN(PIN_L_PWM_2), 7, PIN_L_PWM_2);
-    keys[8] = createRegKey(NAME_DFN(PIN_R_EN_2), 8, PIN_R_EN_2);
-    keys[9] = createRegKey(NAME_DFN(PIN_L_EN_2), 9, PIN_L_EN_2);
-    keys[10] = createRegKey(NAME_DFN(PIN_R_IS_2), 10, PIN_R_IS_2);
-    keys[11] = createRegKey(NAME_DFN(PIN_L_IS_2), 11, PIN_L_IS_2);
-    
-    keys[12] = createRegKey(NAME_DFN(PIN_R_PWM_3), 12, PIN_R_PWM_3);
-    keys[13] = createRegKey(NAME_DFN(PIN_L_PWM_3), 13, PIN_L_PWM_3);
-    keys[14] = createRegKey(NAME_DFN(PIN_R_EN_3), 14, PIN_R_EN_3);
-    keys[15] = createRegKey(NAME_DFN(PIN_L_EN_3), 15, PIN_L_EN_3);
-    keys[16] = createRegKey(NAME_DFN(PIN_R_IS_3), 16, PIN_R_IS_3);
-    keys[17] = createRegKey(NAME_DFN(PIN_L_IS_3), 17, PIN_L_IS_3);
-    
-    keys[18] = createRegKey(NAME_DFN(PIN_R_PWM_4), 18, PIN_R_PWM_4);
-    keys[19] = createRegKey(NAME_DFN(PIN_L_PWM_4), 19, PIN_L_PWM_4);
-    keys[20] = createRegKey(NAME_DFN(PIN_R_EN_4), 20, PIN_R_EN_4);
-    keys[21] = createRegKey(NAME_DFN(PIN_L_EN_4), 21, PIN_L_EN_4);
-    keys[22] = createRegKey(NAME_DFN(PIN_R_IS_4), 22, PIN_R_IS_4);
-    keys[23] = createRegKey(NAME_DFN(PIN_L_IS_4), 23, PIN_L_IS_4);
-    
-    keys[24] = createRegKey("CTR_PID_P", 24, 1);
-    keys[25] = createRegKey("CTR_PID_I_1", 25, 0);
-    keys[26] = createRegKey("CTR_PID_I_2", 26, 0);
-    keys[27] = createRegKey("CTR_PID_D_1", 27, 0);
-    keys[28] = createRegKey("CTR_PID_D_2", 28, 0);
-    keys[29] = createRegKey(NAME_DFN(RAD_MOVE), 29, RAD_MOVE);
-
 
     return error;
 }
 
 //
-REG_ERROR reg_free(reg_data *regs)
+byte regReadByName(char *name, reg_data *regs)
 {
+}
 
+//
+byte regReadByAddr(uint8_t addr, reg_data *regs)
+{
+}
+
+//
+REG_ERROR regKeyListWrite(reg_key *regs)
+{
+    // Код испольнения функции
+    REG_ERROR error = REG_ERROR_OK;
+
+    // Проверка на нулевой указатель
+    if (regs == NULL)
+    {
+        // Присвоение кода ошибки
+        error = REG_ERROR::REG_ERROR_NULL_PTR;
+    }
+    else
+    {
+        // Инициализация EEPROM с указанным размером
+        EEPROM.begin(EEPROM_SIZE);
+        // Количество структур reg_key
+        uint8_t size = sizeof(*regs) / sizeof(reg_key); 
+        
+        // Произведение записи данных в EEPROM микроконтроллера
+        for (uint8_t i = 0; i < size; i++)
+        {
+            // Производим подготовку к фиксации данных в указанную ячейку памяти
+            EEPROM.write(regs[i].addr, regs[i].val);
+            // Производим запись всех подготовленных данных по указанным ячейкам памяти
+            EEPROM.commit();
+        }
+    }
+
+    return error;
+}
+
+//
+REG_ERROR regKeyListRemove(uint8_t addr, reg_key* regs)
+{
+    // Код испольнения функции
+    REG_ERROR error = REG_ERROR_OK;
+
+    // Количество структур reg_key
+    const uint8_t size = sizeof(*regs) / sizeof(reg_key);
+
+    // Проверка на нулевой указатель
+    if (regs == NULL)
+    {
+        // Присвоение кода ошибки
+        error = REG_ERROR::REG_ERROR_NULL_PTR;
+    }
+    else if ((addr < 0) || (addr >= EEPROM_SIZE) || (addr < (size - 1)))
+    {
+        // Присвоение кода ошибки
+        error = REG_ERROR::REG_ERROR_WRONG_VAL;
+    }
+    else if (addr == 0)
+    {
+        // Локальный массив структур для копирования
+        reg_key* new_regs[(size - 1)];
+        // Копирование значений в локльный массив до удаляемого ключа
+        for(uint8_t i = 0; i < (size - 1); i++)
+        {
+            // Имя следующего регистра
+            const char* name = regs[i+1].name;
+            // Адресс следующего регистра
+            uint8_t addr = regs[i+1].addr;
+            // Значение следующего регистра
+            byte val = regs[i+1].val;
+            // Копирование имени
+            strcpy(new_regs[i]->name, name);
+            // Копирование адресса
+            new_regs[i]->addr = addr;
+            // Копирование значения
+            new_regs[i]->val = val;
+        }
+
+        // Меняем размер выделенной памяти
+        regs = (reg_key*)realloc(regs, (size - 1) * sizeof(reg_key));
+        // Во избежания утечки памяти заполняем значениями локального массива reg_key
+        regs = *new_regs;
+    }
+    else if (addr == (size - 1))
+    {
+        // Локальный массив структур для копирования
+        reg_key* new_regs[(size - 1)];
+
+        // Копирование значений в локльный массив до удаляемого ключа
+        for(uint8_t i = 0; i < (size - 1); i++)
+        {
+            // Имя следующего регистра
+            const char* name = regs[i].name;
+            // Адресс следующего регистра
+            uint8_t addr = regs[i].addr;
+            // Значение следующего регистра
+            byte val = regs[i].val;
+            // Копирование имени
+            strcpy(new_regs[i]->name, name);
+            // Копирование адресса
+            new_regs[i]->addr = addr;
+            // Копирование значения
+            new_regs[i]->val = val;
+        }
+
+        // Меняем размер выделенной памяти
+        regs = (reg_key*)realloc(regs, (size - 1) * sizeof(reg_key));
+        // Во избежания утечки памяти заполняем значениями локального массива reg_key
+        regs = *new_regs;
+    }
+    else
+    {
+        // Локальный массив структур для копирования
+        reg_key* new_regs[(size - 1)];
+
+        // Копирование значений в локльный массив до удаляемого ключа
+        for(uint8_t i = 0; i < addr; i++)
+        {
+            // Имя следующего регистра
+            const char* name = regs[i].name;
+            // Адресс следующего регистра
+            uint8_t addr = regs[i].addr;
+            // Значение следующего регистра
+            byte val = regs[i].val;
+            // Копирование имени
+            strcpy(new_regs[i]->name, name);
+            // Копирование адресса
+            new_regs[i]->addr = addr;
+            // Копирование значения
+            new_regs[i]->val = val;
+        }
+
+        // Копирование значений в локльный массив после удаляемого ключа
+        for(uint8_t i = addr; i < (size - 1); i++)
+        {
+            // Имя следующего регистра
+            const char* name = regs[i+1].name;
+            // Адресс следующего регистра
+            uint8_t addr = regs[i+1].addr;
+            // Значение следующего регистра
+            byte val = regs[i+1].val;
+            // Копирование имени
+            strcpy(new_regs[i]->name, name);
+            // Копирование адресса
+            new_regs[i]->addr = addr;
+            // Копирование значения
+            new_regs[i]->val = val;
+        }
+
+        // Меняем размер выделенной памяти
+        regs = (reg_key*)realloc(regs, (size - 1) * sizeof(reg_key));
+        // Во избежания утечки памяти заполняем значениями локального массива reg_key
+        regs = *new_regs;
+    }
+
+    return error;
+}
+
+//
+REG_ERROR regKeyListFree(reg_key *regs)
+{
+    REG_ERROR error = REG_ERROR::REG_ERROR_OK;
+    
+    if (regs == NULL)
+    {
+        // Присвоение кода ошибки
+        error = REG_ERROR::REG_ERROR_NULL_PTR;
+    }
+    else
+    {
+        // Освобождение памяти в ОЗУ
+        free(regs);
+    }
+
+    return error;
 }
 
 REG_ERROR reg_wheel_swap(reg_data_wheel *wheel, reg_data *regs)
