@@ -1,5 +1,5 @@
 /**
- * \file smif_test.h
+ * \file mrp_moving_data.h
  * \author Sckom
  * \brief Файл содержит структуры данных и функций для взаимодействия с
  * поворотным механизмом платформы SMIF

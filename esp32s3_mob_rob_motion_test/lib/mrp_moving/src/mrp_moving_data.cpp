@@ -1,5 +1,5 @@
 /**
- * \file mrp_data.cpp
+ * \file mrp_moving_data.cpp
  * \author Sckom
  * \brief Файл содержит описание функций (инструкции) управления 
  * поворотным механизмом SMIF
@@ -11,7 +11,7 @@
  */
 
 // // Подключение заголовочного файла с объявлением функций и структур
-// #include "../inc/mrp_func_test.h"
+// #include "../inc/mrp_moving_func.h"
 
 // /* Begin SMIF area */
 
