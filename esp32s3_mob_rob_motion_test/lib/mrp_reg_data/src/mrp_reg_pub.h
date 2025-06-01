@@ -14,9 +14,9 @@
 #ifndef MRP_REG_DATA_H
 #define MRP_REG_DATA_H
 
-#include <Arduino.h>
-// Энергонезависимая память
-#include <EEPROM.h>
+/* Подключение заголовочного файла с приватными функциями (привязвны к 
+используемому фреймворку и микроконтроллеру) */
+#include "mrp_reg_pr.h"
 // Перечень используемых пинов, необходимо хранить в ${workspaceFolder}/include
 #include <mrp_cfg.h>
 

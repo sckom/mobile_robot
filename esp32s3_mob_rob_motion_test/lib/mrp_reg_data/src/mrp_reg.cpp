@@ -10,7 +10,7 @@
  */
 
 // Подключение заголовочного файла
-#include "mrp_reg_data.h"
+#include "mrp_reg_pub.h"
 
 // Фнкция для создания списка структур данных регистров
 reg_key* regKeyListCreate()
@@ -105,7 +105,7 @@ REG_ERROR regKeyListWrite(reg_key *regs, uint8_t addr)
     else
     {
         // Инициализация EEPROM с указанным размером
-        EEPROM.begin(EEPROM_SIZE);
+        eeprom_begin(EEPROM_SIZE);
 
         // Количество структур reg_key
         uint8_t size = sizeof(*regs) / sizeof(reg_key); 
@@ -140,7 +140,7 @@ REG_ERROR regKeyListWriteFull(reg_key *regs)
     else
     {
         // Инициализация EEPROM с указанным размером
-        EEPROM.begin(EEPROM_SIZE);
+        eeprom_begin(EEPROM_SIZE);
         // Количество структур reg_key
         uint8_t size = sizeof(*regs) / sizeof(reg_key); 
         
@@ -331,7 +331,7 @@ REG_ERROR regReadByName(reg_key *regs, char *name, byte* val)
             char *res = strstr(n_name, name);
             if (res)
             {
-                *val = regs[i].val; 
+                *val = eeprom_read(regs[i].val);
                 found_str = true;
             }
         }
@@ -364,7 +364,7 @@ REG_ERROR regReadByAddr(reg_key *regs, uint8_t addr, byte* val)
     }
     else
     {
-        *val = regs[addr].val;
+        *val = eeprom_read(regs[addr].val);
     }
     return error;
 }

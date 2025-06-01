@@ -13,7 +13,7 @@
 #ifndef REG_CONTROL_H
 #define REG_CONTROL_H
 
-#include <mrp_reg_data.h>
+#include <mrp_reg_pub.h>
 
 /**
  * \brief Структура данных с регистрами, связанными с управлением дравером 
