@@ -12,7 +12,7 @@
 // Подключение заголовочного файла
 #include "mrp_reg_data.h"
 
-//
+// Фнкция для создания списка структур данных регистров
 reg_key* regKeyListCreate()
 {
     // Массив структур с регистрами, созданным в ОЗУ с возможностью изменения выделенной памяти
@@ -29,7 +29,7 @@ reg_key* regKeyListCreate()
     return regs;
 }
 
-//
+// Функция добаления элемента данных регистра в список регистров
 REG_ERROR regKeyListAdd(char *name, uint8_t addr, byte val, reg_key *regs)
 {
     // Код испольнения функции
@@ -90,18 +90,43 @@ REG_ERROR regKeyListAdd(char *name, uint8_t addr, byte val, reg_key *regs)
     return error;
 }
 
-//
-byte regReadByName(char *name, reg_data *regs)
+// Фнкция записи данных из списка регистров в энергонезависимую память 
+REG_ERROR regKeyListWrite(reg_key *regs, uint8_t addr)
 {
+    // Код испольнения функции
+    REG_ERROR error = REG_ERROR_OK;
+
+    // Проверка на нулевой указатель
+    if (regs == NULL)
+    {
+        // Присвоение кода ошибки
+        error = REG_ERROR::REG_ERROR_NULL_PTR;
+    }
+    else
+    {
+        // Инициализация EEPROM с указанным размером
+        EEPROM.begin(EEPROM_SIZE);
+
+        // Количество структур reg_key
+        uint8_t size = sizeof(*regs) / sizeof(reg_key); 
+
+        // Произведение записи данных в EEPROM микроконтроллера
+        for (uint8_t i = 0; i < size; i++)
+        {
+            if (regs[i].addr == addr)
+            {
+                 // Производим подготовку к фиксации данных в указанную ячейку памяти
+                EEPROM.write(regs[i].addr, regs[i].val);
+                // Производим запись всех подготовленных данных по указанным ячейкам памяти
+                EEPROM.commit();
+            }
+        }
+    }
+    return error;
 }
 
-//
-byte regReadByAddr(uint8_t addr, reg_data *regs)
-{
-}
-
-//
-REG_ERROR regKeyListWrite(reg_key *regs)
+// Фнкция записи данных всего списка регистров в энергонезависимую память 
+REG_ERROR regKeyListWriteFull(reg_key *regs)
 {
     // Код испольнения функции
     REG_ERROR error = REG_ERROR_OK;
@@ -132,7 +157,7 @@ REG_ERROR regKeyListWrite(reg_key *regs)
     return error;
 }
 
-//
+// Функция удаления элемента данных регистра в список регистров
 REG_ERROR regKeyListRemove(uint8_t addr, reg_key* regs)
 {
     // Код испольнения функции
@@ -147,7 +172,7 @@ REG_ERROR regKeyListRemove(uint8_t addr, reg_key* regs)
         // Присвоение кода ошибки
         error = REG_ERROR::REG_ERROR_NULL_PTR;
     }
-    else if ((addr < 0) || (addr >= EEPROM_SIZE) || (addr < (size - 1)))
+    else if ((addr < 0) || (addr >= EEPROM_SIZE) || (addr > (size - 1)))
     {
         // Присвоение кода ошибки
         error = REG_ERROR::REG_ERROR_WRONG_VAL;
@@ -155,9 +180,9 @@ REG_ERROR regKeyListRemove(uint8_t addr, reg_key* regs)
     else if (addr == 0)
     {
         // Локальный массив структур для копирования
-        reg_key* new_regs[(size - 1)];
+        reg_key* new_regs[(size)];
         // Копирование значений в локльный массив до удаляемого ключа
-        for(uint8_t i = 0; i < (size - 1); i++)
+        for(uint8_t i = 0; i < (size); i++)
         {
             // Имя следующего регистра
             const char* name = regs[i+1].name;
@@ -174,17 +199,17 @@ REG_ERROR regKeyListRemove(uint8_t addr, reg_key* regs)
         }
 
         // Меняем размер выделенной памяти
-        regs = (reg_key*)realloc(regs, (size - 1) * sizeof(reg_key));
+        regs = (reg_key*)realloc(regs, (size) * sizeof(reg_key));
         // Во избежания утечки памяти заполняем значениями локального массива reg_key
         regs = *new_regs;
     }
-    else if (addr == (size - 1))
+    else if (addr == (size))
     {
         // Локальный массив структур для копирования
-        reg_key* new_regs[(size - 1)];
+        reg_key* new_regs[(size)];
 
         // Копирование значений в локльный массив до удаляемого ключа
-        for(uint8_t i = 0; i < (size - 1); i++)
+        for(uint8_t i = 0; i < (size); i++)
         {
             // Имя следующего регистра
             const char* name = regs[i].name;
@@ -201,14 +226,14 @@ REG_ERROR regKeyListRemove(uint8_t addr, reg_key* regs)
         }
 
         // Меняем размер выделенной памяти
-        regs = (reg_key*)realloc(regs, (size - 1) * sizeof(reg_key));
+        regs = (reg_key*)realloc(regs, size * sizeof(reg_key));
         // Во избежания утечки памяти заполняем значениями локального массива reg_key
         regs = *new_regs;
     }
     else
     {
         // Локальный массив структур для копирования
-        reg_key* new_regs[(size - 1)];
+        reg_key* new_regs[size];
 
         // Копирование значений в локльный массив до удаляемого ключа
         for(uint8_t i = 0; i < addr; i++)
@@ -228,7 +253,7 @@ REG_ERROR regKeyListRemove(uint8_t addr, reg_key* regs)
         }
 
         // Копирование значений в локльный массив после удаляемого ключа
-        for(uint8_t i = addr; i < (size - 1); i++)
+        for(uint8_t i = addr; i < size; i++)
         {
             // Имя следующего регистра
             const char* name = regs[i+1].name;
@@ -245,7 +270,7 @@ REG_ERROR regKeyListRemove(uint8_t addr, reg_key* regs)
         }
 
         // Меняем размер выделенной памяти
-        regs = (reg_key*)realloc(regs, (size - 1) * sizeof(reg_key));
+        regs = (reg_key*)realloc(regs, (size) * sizeof(reg_key));
         // Во избежания утечки памяти заполняем значениями локального массива reg_key
         regs = *new_regs;
     }
@@ -253,11 +278,13 @@ REG_ERROR regKeyListRemove(uint8_t addr, reg_key* regs)
     return error;
 }
 
-//
+// Функция очистки памяти от списка структур данных о регистрах
 REG_ERROR regKeyListFree(reg_key *regs)
 {
+    // Код испольнения функции
     REG_ERROR error = REG_ERROR::REG_ERROR_OK;
     
+    // Проверка на нулевой указатель
     if (regs == NULL)
     {
         // Присвоение кода ошибки
@@ -272,10 +299,72 @@ REG_ERROR regKeyListFree(reg_key *regs)
     return error;
 }
 
-REG_ERROR reg_wheel_swap(reg_data_wheel *wheel, reg_data *regs)
+
+// Функция считывания значения регистра, найденного по названию
+REG_ERROR regReadByName(reg_key *regs, char *name, byte* val)
 {
+    // Код испольнения функции
+    REG_ERROR error = REG_ERROR::REG_ERROR_OK;
+
+    // Количество структур reg_key
+    const uint8_t size = sizeof(*regs) / sizeof(reg_key);
+
+    // Проверка на нулевой указатель
+    if (regs == NULL)
+    {
+        // Присвоение кода ошибки
+        error = REG_ERROR::REG_ERROR_NULL_PTR;
+    }
+    else if ((sizeof(name) < 3) || (strlen(name) > MAX_LEGHT_REG_NAME))
+    {
+        // Присвоение кода ошибки
+        error = REG_ERROR::REG_ERROR_WRONG_VAL;
+        return error;
+    }
+    else
+    {
+        bool found_str = false;
+        // Поиск среди списка регистров в их описании аргументра-строки как подстроки
+        for (uint8_t i = 0; i < size; i++)
+        {
+            const char* n_name = regs[i].name; 
+            char *res = strstr(n_name, name);
+            if (res)
+            {
+                *val = regs[i].val; 
+                found_str = true;
+            }
+        }
+
+        if (!found_str)
+        {
+            // Присвоение кода ошибки
+            error = REG_ERROR::REG_ERROR_NULL_PTR;
+        }
+    }
+    return error;
 }
 
-REG_ERROR reg_dir_swap(reg_data_wheel *wheel, reg_data *regs)
+// Функция считывания значения регистра, найденного по адресу
+REG_ERROR regReadByAddr(reg_key *regs, uint8_t addr, byte* val)
 {
+    // Код испольнения функции
+    REG_ERROR error = REG_ERROR::REG_ERROR_OK;
+
+    // Проверка на нулевой указатель
+    if (regs == NULL)
+    {
+        // Присвоение кода ошибки
+        error = REG_ERROR::REG_ERROR_NULL_PTR;
+    }
+    else if ((addr < 0) || (addr >= EEPROM_SIZE))
+    {
+        // Присвоение кода ошибки
+        error = REG_ERROR::REG_ERROR_WRONG_VAL;
+    }
+    else
+    {
+        *val = regs[addr].val;
+    }
+    return error;
 }

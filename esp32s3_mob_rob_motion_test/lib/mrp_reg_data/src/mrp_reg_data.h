@@ -1,7 +1,9 @@
 /**
  * \file mrp_reg_data.h
  * \author Sckom
- * \brief 
+ * \brief Заголовочный файл с объявлением структур данных и функций для работы 
+ * с регистрами, данные которых считывать и записывать в энергонезавиимую 
+ * память микроконтроллеров Espressif ESP32
  * \version 0.1
  * \date 2025-04-23
  * 
@@ -149,8 +151,8 @@
 #define NAME_DFN(x) (#x)
 
 /**
- * \brief 
- * 
+ * \brief Перечисление статус-кодов выполнения функций управления данными 
+ * регистров
  */
 typedef enum
 {
@@ -160,8 +162,7 @@ typedef enum
 } REG_ERROR;
 
 /**
- * \brief 
- * 
+ * \brief Структура данных о регистре: наименование, адрес памяти, значение
  */
 typedef struct
 {
@@ -169,46 +170,5 @@ typedef struct
     uint8_t addr;
     byte val;
 } reg_key;
-
-/**
- * \brief 
- * 
- */
-typedef struct
-{
-    reg_key* reg_f_pwm;
-    reg_key* reg_b_pwm;
-    reg_key* reg_f_en;
-    reg_key* reg_b_en;
-    reg_key* reg_f_is;
-    reg_key* reg_b_is;
-} reg_data_wheel;
-
-/**
- * \brief 
- * 
- */
-typedef struct
-{
-    reg_key* reg_pid_p;
-    reg_key* reg_pid_i_1;
-    reg_key* reg_pid_i_2;
-    reg_key* reg_pid_d_1;
-    reg_key* reg_pid_d_2;
-    reg_key* reg_move_rad;
-} reg_data_ctr;
-
-/**
- * \brief 
- * 
- */
-typedef struct
-{
-    reg_data_wheel* fl_wheel;
-    reg_data_wheel* fr_wheel;
-    reg_data_wheel* bl_wheel;
-    reg_data_wheel* br_wheel;
-    reg_data_ctr* ctr_move;
-} reg_data;
 
 #endif
