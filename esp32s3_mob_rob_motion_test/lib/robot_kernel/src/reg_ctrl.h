@@ -1,11 +1,11 @@
 /**
- * @file reg_ctrl.h
- * @author your name (you@domain.com)
- * @brief 
- * @version 0.1
- * @date 2025-06-01
+ * \file reg_ctrl.h
+ * \author Sckom
+ * \brief 
+ * \version 0.1
+ * \date 2025-06-01
  * 
- * @copyright Copyright (c) 2025
+ * \copyright Copyright (c) 2025
  * 
  */
 
@@ -13,7 +13,10 @@
 #ifndef REG_CONTROL_H
 #define REG_CONTROL_H
 
-#include <mrp_reg_pub.h>
+// Библиотека работы с регистрами данных
+#include <mrp_reg.h>
+// Перечень используемых пинов, необходимо хранить в ${workspaceFolder}/include
+#include <mrp_cfg.h>
 
 /**
  * \brief Структура данных с регистрами, связанными с управлением дравером 
@@ -58,13 +61,13 @@ typedef struct
 
 /* Функция для смены местами данных двух структур данных управления драйвером 
 двигателя */
-REG_ERROR reg_wheel_swap()
+REG_EXEC reg_wheel_swap()
 {
 
 }
 
 /* Функция для смены местами данных о направлении вращения для двух двигателей */
-REG_ERROR reg_dir_swap()
+REG_EXEC reg_dir_swap()
 {
 
 }

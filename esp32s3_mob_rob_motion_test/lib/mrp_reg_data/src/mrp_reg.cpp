@@ -1,7 +1,7 @@
 /**
  * \file mrp_reg_data.c
  * \author Sckom
- * \brief
+ * \brief Инструкции для публичных функций библиотеки
  * \version 0.1
  * \date 2025-04-23
  *
@@ -30,22 +30,22 @@ reg_key* regKeyListCreate()
 }
 
 // Функция добаления элемента данных регистра в список регистров
-REG_ERROR regKeyListAdd(char *name, uint8_t addr, byte val, reg_key *regs)
+REG_EXEC regKeyListAdd(char *name, uint8_t addr, byte val, reg_key *regs)
 {
-    // Код испольнения функции
-    REG_ERROR error = REG_ERROR::REG_ERROR_OK;
+    // Код исполнения функции
+    REG_EXEC error = REG_EXEC::REG_EXEC_OK;
 
     if ((name == NULL) || (strlen(name) > MAX_LEGHT_REG_NAME) || (addr >= EEPROM_SIZE))
     {    
         name = strchr("None", 4);
         strcpy(regs->name, name);
         // Присвоение кода ошибки
-        error = REG_ERROR::REG_ERROR_WRONG_VAL;
+        error = REG_EXEC::REG_EXEC_WRONG_VAL;
     }
     else if (regs == NULL)
     {
         // Присвоение кода ошибки
-        error = REG_ERROR::REG_ERROR_NULL_PTR;
+        error = REG_EXEC::REG_EXEC_NULL_PTR;
     }
     else
     {
@@ -91,16 +91,16 @@ REG_ERROR regKeyListAdd(char *name, uint8_t addr, byte val, reg_key *regs)
 }
 
 // Фнкция записи данных из списка регистров в энергонезависимую память 
-REG_ERROR regKeyListWrite(reg_key *regs, uint8_t addr)
+REG_EXEC regKeyListWrite(reg_key *regs, uint8_t addr)
 {
-    // Код испольнения функции
-    REG_ERROR error = REG_ERROR_OK;
+    // Код исполнения функции
+    REG_EXEC error = REG_EXEC_OK;
 
     // Проверка на нулевой указатель
     if (regs == NULL)
     {
         // Присвоение кода ошибки
-        error = REG_ERROR::REG_ERROR_NULL_PTR;
+        error = REG_EXEC::REG_EXEC_NULL_PTR;
     }
     else
     {
@@ -115,10 +115,8 @@ REG_ERROR regKeyListWrite(reg_key *regs, uint8_t addr)
         {
             if (regs[i].addr == addr)
             {
-                 // Производим подготовку к фиксации данных в указанную ячейку памяти
-                EEPROM.write(regs[i].addr, regs[i].val);
-                // Производим запись всех подготовленных данных по указанным ячейкам памяти
-                EEPROM.commit();
+                // Производим подготовку к фиксации данных в указанную ячейку памяти
+                eeprom_write(regs[i].addr, regs[i].val);
             }
         }
     }
@@ -126,16 +124,16 @@ REG_ERROR regKeyListWrite(reg_key *regs, uint8_t addr)
 }
 
 // Фнкция записи данных всего списка регистров в энергонезависимую память 
-REG_ERROR regKeyListWriteFull(reg_key *regs)
+REG_EXEC regKeyListWriteFull(reg_key *regs)
 {
-    // Код испольнения функции
-    REG_ERROR error = REG_ERROR_OK;
+    // Код исполнения функции
+    REG_EXEC error = REG_EXEC_OK;
 
     // Проверка на нулевой указатель
     if (regs == NULL)
     {
         // Присвоение кода ошибки
-        error = REG_ERROR::REG_ERROR_NULL_PTR;
+        error = REG_EXEC::REG_EXEC_NULL_PTR;
     }
     else
     {
@@ -148,9 +146,7 @@ REG_ERROR regKeyListWriteFull(reg_key *regs)
         for (uint8_t i = 0; i < size; i++)
         {
             // Производим подготовку к фиксации данных в указанную ячейку памяти
-            EEPROM.write(regs[i].addr, regs[i].val);
-            // Производим запись всех подготовленных данных по указанным ячейкам памяти
-            EEPROM.commit();
+            eeprom_write(regs[i].addr, regs[i].val);
         }
     }
 
@@ -158,10 +154,10 @@ REG_ERROR regKeyListWriteFull(reg_key *regs)
 }
 
 // Функция удаления элемента данных регистра в список регистров
-REG_ERROR regKeyListRemove(uint8_t addr, reg_key* regs)
+REG_EXEC regKeyListRemove(uint8_t addr, reg_key* regs)
 {
-    // Код испольнения функции
-    REG_ERROR error = REG_ERROR_OK;
+    // Код исполнения функции
+    REG_EXEC error = REG_EXEC_OK;
 
     // Количество структур reg_key
     const uint8_t size = sizeof(*regs) / sizeof(reg_key);
@@ -170,12 +166,12 @@ REG_ERROR regKeyListRemove(uint8_t addr, reg_key* regs)
     if (regs == NULL)
     {
         // Присвоение кода ошибки
-        error = REG_ERROR::REG_ERROR_NULL_PTR;
+        error = REG_EXEC::REG_EXEC_NULL_PTR;
     }
     else if ((addr < 0) || (addr >= EEPROM_SIZE) || (addr > (size - 1)))
     {
         // Присвоение кода ошибки
-        error = REG_ERROR::REG_ERROR_WRONG_VAL;
+        error = REG_EXEC::REG_EXEC_WRONG_VAL;
     }
     else if (addr == 0)
     {
@@ -279,16 +275,16 @@ REG_ERROR regKeyListRemove(uint8_t addr, reg_key* regs)
 }
 
 // Функция очистки памяти от списка структур данных о регистрах
-REG_ERROR regKeyListFree(reg_key *regs)
+REG_EXEC regKeyListFree(reg_key *regs)
 {
-    // Код испольнения функции
-    REG_ERROR error = REG_ERROR::REG_ERROR_OK;
+    // Код исполнения функции
+    REG_EXEC error = REG_EXEC::REG_EXEC_OK;
     
     // Проверка на нулевой указатель
     if (regs == NULL)
     {
         // Присвоение кода ошибки
-        error = REG_ERROR::REG_ERROR_NULL_PTR;
+        error = REG_EXEC::REG_EXEC_NULL_PTR;
     }
     else
     {
@@ -299,26 +295,25 @@ REG_ERROR regKeyListFree(reg_key *regs)
     return error;
 }
 
-
 // Функция считывания значения регистра, найденного по названию
-REG_ERROR regReadByName(reg_key *regs, char *name, byte* val)
+REG_EXEC regReadByName(reg_key *regs, char *name, byte *val)
 {
-    // Код испольнения функции
-    REG_ERROR error = REG_ERROR::REG_ERROR_OK;
+    // Код исполнения функции
+    REG_EXEC error = REG_EXEC::REG_EXEC_OK;
 
     // Количество структур reg_key
     const uint8_t size = sizeof(*regs) / sizeof(reg_key);
 
     // Проверка на нулевой указатель
-    if (regs == NULL)
+    if (regs == NULL || val == NULL)
     {
         // Присвоение кода ошибки
-        error = REG_ERROR::REG_ERROR_NULL_PTR;
+        error = REG_EXEC::REG_EXEC_NULL_PTR;
     }
     else if ((sizeof(name) < 3) || (strlen(name) > MAX_LEGHT_REG_NAME))
     {
         // Присвоение кода ошибки
-        error = REG_ERROR::REG_ERROR_WRONG_VAL;
+        error = REG_EXEC::REG_EXEC_WRONG_VAL;
         return error;
     }
     else
@@ -339,28 +334,28 @@ REG_ERROR regReadByName(reg_key *regs, char *name, byte* val)
         if (!found_str)
         {
             // Присвоение кода ошибки
-            error = REG_ERROR::REG_ERROR_NULL_PTR;
+            error = REG_EXEC::REG_EXEC_NULL_PTR;
         }
     }
     return error;
 }
 
 // Функция считывания значения регистра, найденного по адресу
-REG_ERROR regReadByAddr(reg_key *regs, uint8_t addr, byte* val)
+REG_EXEC regReadByAddr(reg_key *regs, uint8_t addr, byte *val)
 {
-    // Код испольнения функции
-    REG_ERROR error = REG_ERROR::REG_ERROR_OK;
+    // Код исполнения функции
+    REG_EXEC error = REG_EXEC::REG_EXEC_OK;
 
     // Проверка на нулевой указатель
-    if (regs == NULL)
+    if (regs == NULL || val == NULL)
     {
         // Присвоение кода ошибки
-        error = REG_ERROR::REG_ERROR_NULL_PTR;
+        error = REG_EXEC::REG_EXEC_NULL_PTR;
     }
     else if ((addr < 0) || (addr >= EEPROM_SIZE))
     {
         // Присвоение кода ошибки
-        error = REG_ERROR::REG_ERROR_WRONG_VAL;
+        error = REG_EXEC::REG_EXEC_WRONG_VAL;
     }
     else
     {
