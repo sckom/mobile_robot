@@ -14,7 +14,7 @@
 // Подключение библиотеки для работы веб-приложения
 #include "mrp_wifi_client.h"
 // Подключение библиотеки управления движением
-#include "mrp_func_test.h"
+#include "mrp_moving_func.h"
 
 // Функция предварительной настройки МК
 void setup()

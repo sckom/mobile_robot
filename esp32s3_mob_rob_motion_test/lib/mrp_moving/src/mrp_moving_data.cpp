@@ -11,7 +11,7 @@
  */
 
 // // Подключение заголовочного файла с объявлением функций и структур
-// #include "../inc/mrp_moving_func.h"
+#include "mrp_moving_func.h"
 
 // /* Begin SMIF area */
 
